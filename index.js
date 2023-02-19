@@ -43,6 +43,7 @@ class CountDown extends React.Component {
     until: Math.max(this.props.until, 0),
     lastUntil: null,
     wentBackgroundAt: null,
+    eventListener: null,
   };
 
   constructor(props) {
@@ -51,12 +52,12 @@ class CountDown extends React.Component {
   }
 
   componentDidMount() {
-    AppState.addEventListener('change', this._handleAppStateChange);
+    this.state.eventListener = AppState.addEventListener('change', this._handleAppStateChange);
   }
 
   componentWillUnmount() {
     clearInterval(this.timer);
-    AppState.removeEventListener('change', this._handleAppStateChange);
+    this.state.eventListener.remove();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -134,7 +135,7 @@ class CountDown extends React.Component {
     const {digitStyle, digitTxtStyle, size} = this.props;
     return (
       <View style={[
-        styles.digitCont,        
+        styles.digitCont,
         {width: size * 2.3, height: size * 2.6},
         digitStyle,
       ]}>
